@@ -1,6 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { AppDataSource } from "../../../../ormconfig"
 import { Player } from "../../../entities/Player";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/pages/api/auth/[...nextauth]"; // next-auth 설정
+import {  } from "next-auth";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await AppDataSource.initialize();
@@ -16,7 +19,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
     case "POST":
-      try {
+      try{
+        const session = await getServerSession(req, res, authOptions  );
+        //const session = await getServerSession(req, res, authOptions);
+        if (!session) {
+          return res.status(401).json({ message: "Unauthorized" });
+        }
         const data = req.body;
         const newPlayer = playerRepository.create(data);
         const savedPlayer = await playerRepository.save(newPlayer);

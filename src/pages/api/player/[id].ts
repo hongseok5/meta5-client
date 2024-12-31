@@ -1,13 +1,18 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { AppDataSource } from "../../../../ormconfig"
 import { Player } from "@/entities/Player"
+import { authOptions } from "@/pages/api/auth/[...nextauth]"; // next-auth 설정
+import { getServerSession } from "next-auth";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await AppDataSource.initialize();
   const playerRepository = AppDataSource.getRepository(Player);
 
   const { id } = req.query;
-
+  const session = await getServerSession(req, res, authOptions  );
+  if (!session) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   switch (req.method) {
     case "GET":
       try {
@@ -43,3 +48,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
+/**
+ * 
+ * Argument of type '[NextApiRequest, NextApiResponse, { providers: (OAuthConfig<GoogleProfile> | CredentialsConfig<{ email: { label: string; type: string; placeholder: string; }; password: { ...; }; }>)[]; callbacks: { ...; }; session: { ...; }; pages: { ...; }; secret: string | undefined; }]' is not assignable to parameter of type 'GetServerSessionParams<GetServerSessionOptions>'.
+  Type '[NextApiRequest, NextApiResponse, { providers: (OAuthConfig<GoogleProfile> | CredentialsConfig<{ email: { label: string; type: string; placeholder: string; }; password: { ...; }; }>)[]; callbacks: { ...; }; session: { ...; }; pages: { ...; }; secret: string | undefined; }]' is not assignable to type '[IncomingMessage & { cookies: Partial<{ [key: string]: string; }>; }, ServerResponse<IncomingMessage>, GetServerSessionOptions] | [...]'.
+    Type '[NextApiRequest, NextApiResponse, { providers: (OAuthConfig<GoogleProfile> | CredentialsConfig<{ email: { label: string; type: string; placeholder: string; }; password: { ...; }; }>)[]; callbacks: { ...; }; session: { ...; }; pages: { ...; }; secret: string | undefined; }]' is not assignable to type '[IncomingMessage & { cookies: Partial<{ [key: string]: string; }>; }, ServerResponse<IncomingMessage>, GetServerSessionOptions]'.
+      Type at position 2 in source is not compatible with type at position 2 in target.
+        Type '{ providers: (OAuthConfig<GoogleProfile> | CredentialsConfig<
+        { email: { label: string; type: string; placeholder: string; }; password: { label: string; type: string; }; }>)[]; 
+         callbacks: { ...; }; session: { ...; }; pages: { ...; }; secret: string | undefined; }' 
+        is not assignable to type 'GetServerSessionOptions'.
+          Type '{ providers: (OAuthConfig<GoogleProfile> | CredentialsConfig<{ email: { label: string; type: string; placeholder: string; }; password: { label: string; type: string; }; }>)[]; callbacks: { ...; }; session: { ...; }; pages: { ...; }; secret: string | undefined; }' 
+          is not assignable to type 'Partial<Omit<AuthOptions, "callbacks">>'.
+            The types of 'session.strategy' are incompatible between these types.
+              Type 'string' is not assignable to type 'SessionStrategy | undefined'.ts(2345)
+ */
