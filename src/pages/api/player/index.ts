@@ -6,12 +6,18 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]"; // next-auth ì„¤ì 
 import {  } from "next-auth";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  await AppDataSource.initialize();
+  if (!AppDataSource.isInitialized) {
+    await AppDataSource.initialize();
+  }
   const playerRepository = AppDataSource.getRepository(Player);
 
   switch (req.method) {
     case "GET":
       try {
+        const session = await getServerSession(req, res, authOptions  );
+        if (!session) {
+          return res.status(401).json({ message: "Unauthorized" });
+        }
         const players = await playerRepository.find();
         return res.status(200).json(players);
       } catch (error) {

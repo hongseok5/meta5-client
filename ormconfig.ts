@@ -5,7 +5,7 @@ export const AppDataSource = new DataSource({
   host: "localhost",
   port: 3306,
   username: "root",
-  password: "9254619o",
+  password: "1",
   database: "metas",
   synchronize: true, // 개발 환경에서만 true로 설정
   logging: false,

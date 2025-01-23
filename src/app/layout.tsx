@@ -5,10 +5,9 @@ import SideNav from './components/SideNav'; // Ensure this path is correct or up
 import React, { ReactNode } from 'react';
 import './globals.css';
 import { SessionProvider } from 'next-auth/react';
-//import type { AppProps } from "next/app";
-//import { useSession } from 'next-auth/react';
-//import { getServerSession } from "next-auth";
-//import { useState, useEffect } from 'react';
+
+import { useAuthStore } from '../store';
+
 
 
 interface RootLayoutProps {
@@ -17,16 +16,15 @@ interface RootLayoutProps {
 
   
 export default function RootLayout({children}: RootLayoutProps) {
-  //const { data: session } = useSession();
-  //const session = await getServerSession(authOptions);
-
+  console.log(children)
+  const { isLoggedIn, login, logout } = useAuthStore();
   return (
 
     <html lang="en">
       <body style={{ margin: 0, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <SessionProvider > {/* SessionProvider로 세션 관리 */}
 
-      <Header />
+      <Header isLoggedIn = {isLoggedIn} login={login} logout={logout}/>
       </SessionProvider>
       <div style={{ display: 'flex', flex: 1 }}>
         <SideNav />

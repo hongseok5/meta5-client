@@ -21,8 +21,8 @@ export default function SideNav() {
         </li>
         <li>
           <Link
-            href="/route1"
-            className={pathname === "/route1" ? "font-bold text-blue-500" : ""}
+            href="/player"
+            className={pathname === "/player" ? "font-bold text-blue-500" : ""}
           >
             Route 1
           </Link>
@@ -33,6 +33,22 @@ export default function SideNav() {
             className={pathname === "/contact" ? "font-bold text-blue-500" : ""}
           >
             Contact
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/domain"
+            className={pathname === "/domain" ? "font-bold text-blue-500" : ""}
+          >
+            도메인
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/words"
+            className={pathname === "/words" ? "font-bold text-blue-500" : ""}
+          >
+            용어
           </Link>
         </li>
       </ul>

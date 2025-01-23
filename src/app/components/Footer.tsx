@@ -1,4 +1,5 @@
 export default function Footer() {
+  console.log("Footer")
     return (
       <footer style={{ background: '#f8f9fa', padding: '10px', textAlign: 'center' }}>
         <p>&copy; 2024 My App. All rights reserved.</p>

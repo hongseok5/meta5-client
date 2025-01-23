@@ -4,29 +4,45 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { signIn, signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from "next/navigation";
 
-export default function Header() {
-  
+interface HeaderProps {
+  isLoggedIn: boolean;
+  login: (msg: string) => void;
+  logout: () => void;
+}
+
+
+const Header: React.FC<HeaderProps> = ({isLoggedIn, login, logout}) => {
+  console.log(isLoggedIn)
+  //const [isMounted, setIsMounted] = useState(false);
+  // useEffect(() => {
+  //   setIsMounted(true); // 컴포넌트가 클라이언트에 마운트되었음을 설정
+  // }, []);
   const {  status, data: session } = useSession(); // 클라이언트에서 세션 상태 가져오기
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   console.log(session)  // undefined
   useEffect(() => {
     if (status === 'authenticated') {
-      setIsLoggedIn(true);
+      //setIsLoggedIn(true);
+      login("oauth")
     } else {
-      setIsLoggedIn(false);
+      //setIsLoggedIn(false);
+      logout()
     }
-  }, [status]);
-  
+  }, []);
+  // 의존성에 status랑 isLoggedIn이 없어도 되는지 확인
   const [showLoginDialog, setShowLoginDialog] = useState(false); // 로그인 다이얼로그 표시 상태
   const [showJoinDialog, setShowJoinDialog] = useState(false); // 로그인 다이얼로그 표시 상태
-
+  // if (!isMounted) {
+  //   return null; // 마운트되기 전에는 아무것도 렌더링하지 않음
+  // }
+  const router = useRouter();
   // 로그아웃 함수
   const handleLogout = () => {
     signOut({callbackUrl: "/"})
-    
-    
-    setIsLoggedIn(false);
+    //setIsLoggedIn(false);
+    logout()
     alert("로그아웃 되었습니다.");
   };
 
@@ -48,7 +64,9 @@ export default function Header() {
 
   // 소셜 로그인 선택 핸들러
   const handleSocialLogin = (provider: string) => {
-    alert(`${provider}로 로그인합니다.`);
+    if(provider === "spring") {
+      router.push("/login")
+    }
     //setIsLoggedIn(true); // 로그인 상태로 변경
     setShowLoginDialog(false); // 다이얼로그 닫기
   };
@@ -63,6 +81,11 @@ export default function Header() {
       }).catch((err) => {
         console.log("catch" , err)
       })
+    } else if(code == "spring"){
+      console.log("route to join")
+      router.push("/join")
+    } else {
+      alert("kakao 로그인")
     }
   }
 
@@ -124,10 +147,10 @@ export default function Header() {
               카카오로 로그인
             </button>
             <button
-              onClick={() => handleSocialLogin("네이버")}
+              onClick={() => handleSocialLogin("spring")}
               className="w-full py-2 bg-green-500 text-white rounded hover:bg-green-600"
             >
-              네이버로 로그인
+              Spring 로그인
             </button>
             <button
               onClick={handleCloseDialog}
@@ -150,13 +173,13 @@ export default function Header() {
               구글로 회원가입
             </button>
             <button
-              onClick={() => handleSocialLogin("카카오")}
+              onClick={() => handleSignUp("카카오")}
               className="w-full mb-2 py-2 bg-yellow-400 text-white rounded hover:bg-yellow-500"
             >
               카카오로 회원가입
             </button>
             <button
-              onClick={() => handleSocialLogin("네이버")}
+              onClick={() => handleSignUp("spring")}
               className="w-full py-2 bg-green-500 text-white rounded hover:bg-green-600"
             >
               일반 회원가입
@@ -173,3 +196,4 @@ export default function Header() {
     </header>
   );
 }
+export default Header;

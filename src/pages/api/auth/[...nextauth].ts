@@ -21,16 +21,12 @@ export const authOptions = {
   callbacks: {
     async signIn({ user}: {user:User}) {
       // 필요한 경우 사용자 데이터를 확인하거나 저장하는 로직 추가
-      console.log("callbacks signIn")
-      console.log("user!")
+
       console.log(user)
       return true; // true일 경우 로그인이 성공
     },
     async session({ session, token }: { session: any; token: any }) {
       // 세션에 사용자 정보를 추가'
-      console.log("callbacks session")
-      console.log(session)
-      console.log("token!")
       console.log(token)
       session.user.id = token.sub;
       return session;
