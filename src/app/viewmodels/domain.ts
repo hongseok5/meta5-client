@@ -1,10 +1,11 @@
-// viewmodels/useTodoViewModel.ts
+
 import { useState, useEffect } from 'react';
 import Domain from "../model/domain";
 import { GenericPagingResponse} from "../response";
 
-export const useTodoViewModel = () => {
-  const [todos, setTodos] = useState<Domain[]>([]);
+
+export const useDomainViewModel = () => {
+  const [domains, setDomains] = useState<Domain[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -14,43 +15,65 @@ export const useTodoViewModel = () => {
 
   const fetchData = async (token: string) => {
     setLoading(true);
-    const response = await fetch('/api/todos');
-    const data = await response.json();
-    setTodos(data);
-    setLoading(false);
-  };
-
-  const addTodo = async (todo: Omit<Todo, 'id'>) => {
-    const response = await fetch('/api/todos', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(todo),
+    const response = await fetch(process.env.NEXT_PUBLIC_SERVER_URL + '/domain/list',{
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        "Authorization": token ? token: `Bearer ${token}`
+      }
     });
-    const newTodo = await response.json();
-    setTodos((prevTodos) => [...prevTodos, newTodo]);
+    console.log(response)
+    const data: GenericPagingResponse<Domain> = await response.json();
+    console.log(data)
+    setDomains(data.content)
+    setLoading(false)
   };
 
-  const updateTodo = async (id: number, updatedTodo: Partial<Todo>) => {
-    await fetch(`/api/todos/${id}`, {
+  const addDomain = async (domain: Domain) => {
+    const token: string = localStorage.getItem("token") || ""
+    const response = await fetch(process.env.NEXT_PUBLIC_SERVER_URL + '/domain', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        "Authorization": token ? token: `Bearer ${token}`
+      },
+      body: JSON.stringify(domain),
+    });
+    //const result = await response.json();
+    fetchData(token);
+  };
+
+  const updateDomain = async (id: string, updatedTodo: Partial<Domain>) => {
+    const token: string = localStorage.getItem("token") || ""
+    await fetch(process.env.NEXT_PUBLIC_SERVER_URL + '/domain', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        "Authorization": token ? token: `Bearer ${token}`
+      },
       body: JSON.stringify(updatedTodo),
     });
-    setTodos((prevTodos) =>
-      prevTodos.map((todo) => (todo.id === id ? { ...todo, ...updatedTodo } : todo))
-    );
+    fetchData(token);
   };
 
-  const deleteTodo = async (id: number) => {
-    await fetch(`/api/todos/${id}`, { method: 'DELETE' });
-    setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+  const deleteDomain = async (id: string) => {
+    const token: string = localStorage.getItem("token") || ""
+    await fetch(process.env.NEXT_PUBLIC_SERVER_URL + '/domain', {
+       method: 'DELETE' ,
+       headers: { 
+        'Content-Type': 'application/json',
+        "Authorization": token ? token: `Bearer ${token}`
+        },
+        body: JSON.stringify({domainName: id}),
+    });
+    fetchData(token);
   };
 
   return {
-    todos,
+    domains,
     loading,
-    addTodo,
-    updateTodo,
-    deleteTodo,
+    addDomain,
+    updateDomain,
+    deleteDomain,
   };
 };

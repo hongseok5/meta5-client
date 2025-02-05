@@ -3,7 +3,7 @@ import { ApolloClient, InMemoryCache, NormalizedCacheObject, createHttpLink } fr
 import { setContext } from '@apollo/client/link/context';
 
 // GraphQL 서버의 링크를 생성합니다.
-/*
+
 const httpLink = createHttpLink({
   uri: 'http://localhost:8080/graphql', // GraphQL 서버의 URI
 });
@@ -16,7 +16,7 @@ const authLink = setContext((_, { headers = {} }) => {
   return {
     headers: {
       ...headers,
-      Authorization: token ? `Bearer ${token}` : '', // 토큰이 있으면 Authorization 헤더에 추가
+      Authorization: token ? token : 'Bearer test', // 토큰이 있으면 Authorization 헤더에 추가
     },
   };
 });
@@ -26,11 +26,12 @@ const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
   link: authLink.concat(httpLink), // authLink와 httpLink를 연결 uri
   cache: new InMemoryCache(),
 });
-*/
 
 
+/*
 const client = new ApolloClient({
   uri: 'http://localhost:8080/graphql',
   cache: new InMemoryCache(),
 });
+*/
 export default client;

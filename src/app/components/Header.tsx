@@ -12,36 +12,27 @@ interface HeaderProps {
   logout: () => void;
 }
 
-
 const Header: React.FC<HeaderProps> = ({isLoggedIn, login, logout}) => {
   console.log(isLoggedIn)
-  //const [isMounted, setIsMounted] = useState(false);
-  // useEffect(() => {
-  //   setIsMounted(true); // 컴포넌트가 클라이언트에 마운트되었음을 설정
-  // }, []);
+
   const {  status, data: session } = useSession(); // 클라이언트에서 세션 상태 가져오기
 
   console.log(session)  // undefined
   useEffect(() => {
     if (status === 'authenticated') {
-      //setIsLoggedIn(true);
       login("oauth")
     } else {
-      //setIsLoggedIn(false);
       logout()
     }
   }, []);
   // 의존성에 status랑 isLoggedIn이 없어도 되는지 확인
   const [showLoginDialog, setShowLoginDialog] = useState(false); // 로그인 다이얼로그 표시 상태
   const [showJoinDialog, setShowJoinDialog] = useState(false); // 로그인 다이얼로그 표시 상태
-  // if (!isMounted) {
-  //   return null; // 마운트되기 전에는 아무것도 렌더링하지 않음
-  // }
+
   const router = useRouter();
-  // 로그아웃 함수
+
   const handleLogout = () => {
     signOut({callbackUrl: "/"})
-    //setIsLoggedIn(false);
     logout()
     alert("로그아웃 되었습니다.");
   };

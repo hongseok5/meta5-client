@@ -48,7 +48,7 @@ export default function SideNav() {
             href="/words"
             className={pathname === "/words" ? "font-bold text-blue-500" : ""}
           >
-            용어
+            단어
           </Link>
         </li>
       </ul>
