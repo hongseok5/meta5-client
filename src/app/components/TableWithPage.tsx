@@ -54,7 +54,7 @@ const PaginatedTable = <T,>({ columns, rows, onRowClick }: PaginatedTableProps<T
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, rowIndex) => (
+            {rows && rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, rowIndex) => (
                 <TableRow key={rowIndex} hover onClick={() => handleRowClick(row)} selected={selectedRow === row[columns[0].key]}>
                     {columns.map((column) => (
                     <TableCell key={String(column.key)}>
@@ -71,7 +71,7 @@ const PaginatedTable = <T,>({ columns, rows, onRowClick }: PaginatedTableProps<T
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={rows.length}
+        count={rows? rows.length: 0}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

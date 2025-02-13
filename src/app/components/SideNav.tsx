@@ -51,6 +51,14 @@ export default function SideNav() {
             단어
           </Link>
         </li>
+        <li>
+          <Link
+            href="/terms"
+            className={pathname === "/terms" ? "font-bold text-blue-500" : ""}
+          >
+            용어
+          </Link>
+        </li>
       </ul>
   
     </nav>
